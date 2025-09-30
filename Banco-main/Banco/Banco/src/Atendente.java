@@ -18,7 +18,6 @@ public class Atendente extends Thread {
             cliente.setInicioAtendimento(inicio);
 
             try {
-                // O tempo já vem acelerado do App.java, não precisa dividir novamente
                 Thread.sleep(cliente.getTempoAtendimento());
             } catch (InterruptedException e) { //só para não dar pau
                 break;
