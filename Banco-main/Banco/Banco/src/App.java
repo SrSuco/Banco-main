@@ -100,9 +100,9 @@ public class App {
         
         double tempoMedioEsperaReal = tempoMedioEspera * 60.0 / 1000.0;
         if (tempoMedioEsperaReal <= 120.0) {
-            System.out.printf("✓ Objetivo ATINGIDO: %.2f segundos <= 120 segundos\n", tempoMedioEsperaReal);
+            System.out.printf("OK Objetivo ATINGIDO: %.2f segundos <= 120 segundos\n", tempoMedioEsperaReal);
         } else {
-            System.out.printf("✗ Objetivo NÃO atingido: %.2f segundos > 120 segundos\n", tempoMedioEsperaReal);
+            System.out.printf("X Objetivo NÃO atingido: %.2f segundos > 120 segundos\n", tempoMedioEsperaReal);
         }
     }
 }
