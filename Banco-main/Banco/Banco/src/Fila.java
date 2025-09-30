@@ -13,7 +13,7 @@ public class Fila {
         while (fila.isEmpty()) {
             try {
                 wait();
-            } catch (InterruptedException e) { //também caso der pau
+            } catch (InterruptedException e) {
                 return null;
             }
         }

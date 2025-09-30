@@ -3,8 +3,12 @@ import java.util.*;
 public class App {
     public static void main(String[] args) throws Exception {
         System.out.println("=== SIMULAÇÃO DO BANCO FIRMEZA ===");
-        System.out.println("Objetivo: Tempo médio de espera <= 2 minutos");
-        System.out.println("Simulando 2 horas como 2 minutos (aceleração x60)\n");
+        System.out.println("Horário de pico: 11:00 às 13:00 (2 horas)");
+        System.out.println("Objetivo: Tempo médio de espera <= 2 minutos (120 segundos)");
+        System.out.println("Intervalo de chegada: 5-50 segundos");
+        System.out.println("Tempo de atendimento: 30-120 segundos\n");
+        
+        System.out.println("Executando simulações com 1 a 15 atendentes...\n");
         
         for (int numAtendentes = 1; numAtendentes <= 15; numAtendentes++) {
             System.out.println("========================================");
@@ -36,22 +40,22 @@ public class App {
 
         while (tempoDecorrido < tempoSimulacaoMs) {
             int intervaloChegadaReal = 5000 + rand.nextInt(45001);
-            int intervaloChegadaAcelerado = intervaloChegadaReal / 60;
+            int intervaloChegadaSimulacao = intervaloChegadaReal / 60;
+            intervaloChegadaSimulacao = Math.max(10, intervaloChegadaSimulacao);
 
             int tempoAtendimentoReal = 30000 + rand.nextInt(90001);
-            int tempoAtendimentoAcelerado = tempoAtendimentoReal / 60;
+            int tempoAtendimentoSimulacao = tempoAtendimentoReal / 60;
+            tempoAtendimentoSimulacao = Math.max(500, tempoAtendimentoSimulacao);
 
-            Cliente c = new Cliente(System.currentTimeMillis(), tempoAtendimentoAcelerado);
+            Cliente c = new Cliente(System.currentTimeMillis(), tempoAtendimentoSimulacao);
             fila.adicionar(c);
 
-            Thread.sleep(intervaloChegadaAcelerado);
+            Thread.sleep(intervaloChegadaSimulacao);
 
             tempoDecorrido = System.currentTimeMillis() - inicioSimulacao;
         }
 
-        while (!fila.isVazia()) {
-            Thread.sleep(100);
-        }
+        Thread.sleep(5000);
 
         for (Atendente atend : atendentes) {
             atend.interrupt();
@@ -79,30 +83,23 @@ public class App {
         double tempoMedioBanco = totalAtendidos > 0 ? somaTempoBanco / (double) totalAtendidos : 0;
         double tempoMedioEspera = totalAtendidos > 0 ? somaTempoEspera / (double) totalAtendidos : 0;
 
-        System.out.println("===== RESULTADOS DA SIMULAÇÃO (tempo acelerado) =====");
-        System.out.println("Número de atendentes utilizados: " + numAtendentes);
-        System.out.println("Clientes atendidos: " + totalAtendidos);
-        System.out.println("Tempo máximo de espera (ms): " + tempoMaxEspera);
-        System.out.println("Tempo máximo de atendimento (ms): " + tempoMaxAtendimento);
-        System.out.println("Tempo médio no banco (ms): " + tempoMedioBanco);
-        System.out.println("Tempo médio de espera na fila (ms): " + tempoMedioEspera);
-        if (tempoMedioEspera <= 2000) {
-            System.out.println("OK Objetivo atingido: tempo médio de espera <= 2 minutos.");
-        } else {
-            System.out.println("X Objetivo NÃO atingido: tempo médio de espera > 2 minutos.");
-        }
-
-        System.out.println("\n===== RESULTADOS CONVERTIDOS PARA O MUNDO REAL =====");
-        System.out.printf("Tempo máximo de espera: %.2f segundos\n", tempoMaxEspera * 60.0 / 1000.0);
-        System.out.printf("Tempo máximo de atendimento: %.2f segundos\n", tempoMaxAtendimento * 60.0 / 1000.0);
-        System.out.printf("Tempo médio no banco: %.2f segundos\n", tempoMedioBanco * 60.0 / 1000.0);
-        System.out.printf("Tempo médio de espera na fila: %.2f segundos\n", tempoMedioEspera * 60.0 / 1000.0);
-        
+        double tempoMaxEsperaReal = tempoMaxEspera * 60.0 / 1000.0;
+        double tempoMaxAtendimentoReal = tempoMaxAtendimento * 60.0 / 1000.0;
+        double tempoMedioBancoReal = tempoMedioBanco * 60.0 / 1000.0;
         double tempoMedioEsperaReal = tempoMedioEspera * 60.0 / 1000.0;
+
+        System.out.println("===== DADOS ESTATÍSTICOS =====");
+        System.out.println("Número de atendentes: " + numAtendentes);
+        System.out.println("Clientes atendidos: " + totalAtendidos);
+        System.out.printf("Tempo máximo de espera: %.1f segundos\n", tempoMaxEsperaReal);
+        System.out.printf("Tempo máximo de atendimento: %.1f segundos\n", tempoMaxAtendimentoReal);
+        System.out.printf("Tempo médio no banco: %.1f segundos\n", tempoMedioBancoReal);
+        System.out.printf("Tempo médio de espera na fila: %.1f segundos\n", tempoMedioEsperaReal);
+        
         if (tempoMedioEsperaReal <= 120.0) {
-            System.out.printf("OK Objetivo ATINGIDO: %.2f segundos <= 120 segundos\n", tempoMedioEsperaReal);
+            System.out.printf("Ok OBJETIVO ATINGIDO: %.1f segundos <= 120 segundos\n", tempoMedioEsperaReal);
         } else {
-            System.out.printf("X Objetivo NÃO atingido: %.2f segundos > 120 segundos\n", tempoMedioEsperaReal);
+            System.out.printf("X Objetivo NÃO atingido: %.1f segundos > 120 segundos\n", tempoMedioEsperaReal);
         }
     }
 }

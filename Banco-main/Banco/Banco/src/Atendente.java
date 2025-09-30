@@ -19,7 +19,7 @@ public class Atendente extends Thread {
 
             try {
                 Thread.sleep(cliente.getTempoAtendimento());
-            } catch (InterruptedException e) { //só para não dar pau
+            } catch (InterruptedException e) {
                 break;
             }
 
